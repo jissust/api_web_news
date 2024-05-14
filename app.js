@@ -9,6 +9,7 @@ var app = express();
 
 // Cargar ficheros rutas
 var article_routes = require('./routes/article');
+var category_routes = require('./routes/category');
 
 // Middlewares
 app.use(bodyParser.urlencoded({extended: false}));
@@ -26,6 +27,7 @@ app.use((req, res, next) => {
 
 // Anadir prefijos o rutas
 app.use('/api', article_routes);
+app.use('/api', category_routes);
 
 // exportar modulos  (fichero actual)
 module.exports = app;
