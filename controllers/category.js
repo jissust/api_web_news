@@ -42,7 +42,42 @@ var controller = {
                 article:"Los datos son invalidos"
             });
         }
+    },
+    update: (req, res) => {
+        var categoryId = req.params.id;
+        var params = req.body;
 
+        try{
+            var validate_name = !validator.isEmpty(params.name);
+        }catch(err){
+            return res.status(200).send({
+                status:'error',
+                message:'Faltan datos por enviar'
+            });
+        }
+
+        if(validate_name){
+            Category
+            .findOneAndUpdate({_id: categoryId}, params,{new:true})
+            .then(cat => {
+                return res.status(200).send({
+                    status:'success',
+                    cat
+                });
+            })
+            .catch( (error) => {
+                return res.status(500).send({
+                    status:'error',
+                    message:'no se actualizaron los datos'
+                });
+            })
+        }else{
+            return res.status(500).send({
+                status:'error',
+                message:'Error al actualizar',
+            });
+        }
     }
 }
+
 module.exports = controller;
