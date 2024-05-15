@@ -77,7 +77,30 @@ var controller = {
                 message:'Error al actualizar',
             });
         }
-    }
+    },
+    getCategories: async(req, res) => {
+        var query = Category.find({}); 
+        //var last = req.params.last;
+        
+        /*if(last || last != undefined){
+            query.limit(last);
+        }*/
+
+        await query.sort('-_id')
+                .exec()
+                .then( category => {
+                    return res.status(200).send({
+                        status:'success',
+                        category
+                    });
+                })
+                .catch( error => {
+                    return res.status(200).send({
+                        status:'error',
+                        message:'No hay articulos para mostrar'
+                    });
+                });
+    },
 }
 
 module.exports = controller;

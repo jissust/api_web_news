@@ -6,7 +6,7 @@
  var CategorySchema = Schema({
     name: String,
     autor: String,
-    date:{ Type: Date}
+    date:{ type: Date, default: Date.now},
  });
 
  module.exports = mongoose.model('Category', CategorySchema);
