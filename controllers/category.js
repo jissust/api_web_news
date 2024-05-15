@@ -101,6 +101,22 @@ var controller = {
                     });
                 });
     },
+    delete:(req, res) => {
+        var categoryId = req.params.id;
+        Category.findOneAndDelete({_id:categoryId},{new:true})
+        .then( categoryRemoved => {
+            return res.status(200).send({
+                status:'success',
+                categoryRemoved,
+            });
+        })
+        .catch( err => {
+            return res.status(500).send({
+                status:'error',
+                message:'Error al borrar',
+            });
+        })
+    }
 }
 
 module.exports = controller;
