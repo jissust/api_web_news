@@ -6,8 +6,7 @@
  var ArticleSchema = Schema({
     title: String,
     content: String,
-    //date:{ Type: Date, default: Date.now},
-    date:{ Type: Date},
+    date:{ type: Date, default: Date.now},
     image: String
  });
 
