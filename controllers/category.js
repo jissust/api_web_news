@@ -116,7 +116,57 @@ var controller = {
                 message:'Error al borrar',
             });
         })
-    }
+    },
+    getArticle: (req, res) => {
+        var articleId = req.params.id;
+        
+        if(!articleId || articleId == null){
+            return res.status(404).send({
+                status:'error',
+                message:'No existe el articulo'
+            });
+        }
+        
+        Article.findById(articleId)
+            .then( article => {
+                return res.status(200).send({
+                    status:'success',
+                    article
+                });
+            })
+            .catch( err => {
+                return res.status(500).send({
+                    status:'error',
+                    message:'Error a devolver los datos',
+                    err: err
+                });
+            })
+    },
+    getCategory: (req, res) => {
+        var categoryId = req.params.id;
+        
+        if(!categoryId || categoryId == null){
+            return res.status(404).send({
+                status:'error',
+                message:'No existe el articulo'
+            });
+        }
+        
+        Category.findById(categoryId)
+            .then( category => {
+                return res.status(200).send({
+                    status:'success',
+                    category
+                });
+            })
+            .catch( err => {
+                return res.status(500).send({
+                    status:'error',
+                    message:'Error a devolver los datos',
+                    err: err
+                });
+            })
+    },
 }
 
 module.exports = controller;

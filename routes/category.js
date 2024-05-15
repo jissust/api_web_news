@@ -9,6 +9,7 @@ router.post('/category/save', CategoryController.save);
 router.get('/category/edit/:id', CategoryController.update);
 router.get('/category/categories', CategoryController.getCategories);
 router.delete('/category/:id', CategoryController.delete);
+router.get('/category/:id', CategoryController.getCategory);
 /** */
 
 module.exports = router;
