@@ -200,7 +200,7 @@ var controller = {
 
             if(articleId){
                 let article_carrusel = new ArticleCarrusel();
-                article_carrusel.url = '/upload/articles/';
+                article_carrusel.url = './upload/articles/';
                 article_carrusel.name = file_name;
                 article_carrusel.article_id = articleId;
                 
