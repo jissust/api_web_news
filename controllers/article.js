@@ -5,6 +5,7 @@ var fs = require('fs');
 var path = require('path');
 
 var Article = require('../models/article');
+var ArticleCarrusel = require('../models/article_carrusel');
 
 var controller = {
     datosCurso: (req, res) => {
@@ -120,7 +121,6 @@ var controller = {
     update: (req, res) => {
         var articleId = req.params.id;
         var params = req.body;
-        
         try {
             var validate_title = !validator.isEmpty(params.title);
             var validate_content = !validator.isEmpty(params.content);
@@ -169,7 +169,8 @@ var controller = {
             });
         })
     },
-    upload:(req, res) => {
+    upload:async(req, res) => {
+        
         var file_name = 'imagen no subida';
         if(!req.files){
             return res.status(404).send({
@@ -178,6 +179,7 @@ var controller = {
             });
         }
 
+
         var file_path = req.files.file.path; 
         var file_split = file_path.split('\\');
 
@@ -185,7 +187,7 @@ var controller = {
 
         var extension_split = file_name.split('\.');
         var file_ext = extension_split[1];
-
+        
         if(file_ext != 'png' && file_ext != 'jpg' && file_ext != 'jpeg' && file_ext != 'gif'){
             fs.unlink(file_path, (err) => {
                 return res.status(200).send({
@@ -195,22 +197,26 @@ var controller = {
             });
         }else{
             var articleId = req.params.id;
-            
-            if(articleId){
-                Article.findOneAndUpdate({_id: articleId}, {image: file_name}, {new:true})
-                        .then(articleUpdated => {
 
-                            return res.status(200).send({
-                                status: "success",
-                                article: articleUpdated
-                            });  
-                        })
-                        .catch(err => {
-                            return res.status(200).send({
-                                status: "error",
-                                err
-                            });  
-                        });
+            if(articleId){
+                let article_carrusel = new ArticleCarrusel();
+                article_carrusel.url = '/upload/articles/';
+                article_carrusel.name = file_name;
+                article_carrusel.article_id = articleId;
+                
+                try {
+                    var result = await article_carrusel.save();
+                    return res.status(200).send({
+                        status:'success',
+                        article: result
+                    });
+    
+                } catch(err) { 
+                    return res.status(404).send({
+                        status:'error',
+                        error: err
+                    });
+                }
             }else{
                 return res.status(200).send({
                     status: "success",

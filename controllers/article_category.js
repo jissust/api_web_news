@@ -5,6 +5,30 @@ var validator = require('validator');
 var ArticleCategory = require('../models/article_category');
 
 var controller = {
+    getArticleCategory: (req, res) => {
+        var articleCategoryId = req.params.id;
+        if(!articleCategoryId || articleCategoryId == null){
+            return res.status(404).send({
+                status:'error',
+                message:'No existe el articulo'
+            });
+        }
+
+        ArticleCategory.findOne({article_id: articleCategoryId})
+        .then( result => {
+            return res.status(200).send({
+                status:'success',
+                article: result
+            });
+        })
+        .catch( err => {
+            return res.status(500).send({
+                status:'error',
+                message:'Error a devolver los datos',
+                err: err
+            });
+        })
+    },
     save: async(req, res) => {
         var params = req.body;
 
@@ -20,8 +44,8 @@ var controller = {
 
         if( article_category_article_id && article_category_category_id){
             var article_category = new ArticleCategory();
-            article_category.category_id = params.article_id;
-            article_category.article_id = params.category_id;
+            article_category.category_id = params.category_id;
+            article_category.article_id = params.article_id;
 
             try{
                 var result = await article_category.save();
