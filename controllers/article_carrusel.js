@@ -31,6 +31,31 @@ var controller = {
             });
         })
     },
+    getArticleCarrusel: (req, res) => {
+        var articleId = req.params.id;
+        if(!articleId || articleId == null){
+            return res.status(404).send({
+                status:'error',
+                message:'No existe el articulo'
+            });
+        }
+
+        ArticleCarrusel.find({article_id: articleId})
+        .then( articleCarruselNew => {
+            
+            return res.status(200).send({
+                status:'success',
+                res: articleCarruselNew
+            })
+
+        })
+        .catch( err => {
+            return res.status(500).send({
+                status:'error',
+                message:'Error al borrar',
+            });
+        })
+    }
 }
 
 module.exports = controller;

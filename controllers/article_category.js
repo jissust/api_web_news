@@ -72,6 +72,25 @@ var controller = {
             message:"Save",
             params: req.body
         });
+    },
+    update: (req, res) => {
+        var articleId = req.params.article_id;
+        var params = req.body;
+
+        ArticleCategory
+        .findOneAndUpdate({article_id: articleId}, params,{new:true})
+        .then( element => {
+            return res.status(200).send({
+                status: "success",
+                res: element
+            })
+        })
+        .catch( error => {
+            return res.status(200).send({
+                status: "error",
+                error: error
+            })
+        });
     }
 }
 
