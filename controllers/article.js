@@ -171,7 +171,7 @@ var controller = {
     },
     upload:async(req, res) => {
         
-        var file_name = 'imagen no subida';
+        var file_name = 'No hay imagenes cargadas';
         if(!req.files){
             return res.status(404).send({
                 status:'error',
@@ -179,8 +179,43 @@ var controller = {
             });
         }
 
-
-        var file_path = req.files.file.path; 
+        if(req.files.file){
+            if(req.files.file.length){
+                try{
+                    req.files.file.forEach( (item) => {
+                        controller.saveArticleCarrusel(item, req.params.id);  
+                    })
+                    return res.status(200).send({
+                        status:'success',
+                        message: req.files.file,
+                    });
+                } catch(err) {
+                    return res.status(200).send({
+                        status: "error",
+                        message: err
+                    });
+                }
+            }else{
+                try{
+                    controller.saveArticleCarrusel(req.files.file, req.params.id);
+                    return res.status(200).send({
+                        status:'success',
+                        message: req.files.file,
+                    });
+                }catch(err){
+                    return res.status(200).send({
+                        status: "error",
+                        message: err
+                    });
+                }
+            }
+        }else{
+            return res.status(200).send({
+                status: "error",
+                message: "no se seleccionaron archivos"
+            });
+        }
+        /*var file_path = req.files.file.path; 
         var file_split = file_path.split('\\');
 
         var file_name = file_split[2];
@@ -223,6 +258,55 @@ var controller = {
                     image: file_name
                 });
             }
+        }*/
+    },
+    saveArticleCarrusel: async(file, articleId) => {
+        //var file_path = req.files.file.path;
+        var file_path = file.path; 
+        var file_split = file_path.split('\\');
+
+        var file_name = file_split[2];
+
+        var extension_split = file_name.split('\.');
+        var file_ext = extension_split[1];
+        
+        if(file_ext != 'png' && file_ext != 'jpg' && file_ext != 'jpeg' && file_ext != 'gif'){
+            fs.unlink(file_path, (err) => {
+                /*return res.status(200).send({
+                    status: "error",
+                    message: "La extensión de la imagen no es válida"
+                });*/
+                return "La extensión de la imagen no es válida";
+            });
+        }else{
+            //var articleId = req.params.id;
+
+            if(articleId){
+                let article_carrusel = new ArticleCarrusel();
+                article_carrusel.url = './upload/articles/';
+                article_carrusel.name = file_name;
+                article_carrusel.article_id = articleId;
+
+                return await article_carrusel.save();
+                /*try {
+                    var result = await article_carrusel.save();
+                    return res.status(200).send({
+                        status:'success',
+                        article: result
+                    });
+    
+                } catch(err) { 
+                    return res.status(404).send({
+                        status:'error',
+                        error: err
+                    });
+                }*/
+            }/*else{
+                return res.status(200).send({
+                    status: "success",
+                    image: file_name
+                });
+            }*/
         }
     },
     getImage: (req, res) => {
