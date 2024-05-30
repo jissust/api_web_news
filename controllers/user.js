@@ -133,6 +133,31 @@ var controller = {
                 message:'Error al borrar',
             });
         })
+    },
+    getUser: (req, res) => {
+        var userId = req.params.id;
+        
+        if(!userId || userId == null){
+            return res.status(404).send({
+                status:'error',
+                message:'No existe el usuario'
+            });
+        }
+
+        User.findById(userId)
+        .then( result => {
+            return res.status(200).send({
+                status:'success',
+                result
+            });
+        })
+        .catch( error => {
+            return res.status(500).send({
+                status:'error',
+                message:'Error a devolver los datos',
+                error
+            });
+        })
     }
 };
 
