@@ -12,7 +12,7 @@ var article_routes = require('./routes/article');
 var category_routes = require('./routes/category');
 var article_category = require('./routes/article_category');
 var article_carrusel = require('./routes/article_carrusel');
-
+var user_routes = require('./routes/user')
 // Middlewares
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
@@ -32,6 +32,7 @@ app.use('/api', article_routes);
 app.use('/api', category_routes);
 app.use('/api', article_category);
 app.use('/api', article_carrusel);
+app.use('/api', user_routes);
 
 // exportar modulos  (fichero actual)
 module.exports = app;

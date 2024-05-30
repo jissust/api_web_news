@@ -21,7 +21,7 @@ var controller = {
         if(validate_name){
             var category = new Category();
             category.name = params.name;
-            category.autor = null;
+            category.autor = params.autor;
 
             try{
                 var result = await category.save();
@@ -103,7 +103,8 @@ var controller = {
     },
     delete:(req, res) => {
         var categoryId = req.params.id;
-        Category.findOneAndDelete({_id:categoryId},{new:true})
+        Category
+        .findOneAndDelete({_id:categoryId},{new:true})
         .then( categoryRemoved => {
             return res.status(200).send({
                 status:'success',
