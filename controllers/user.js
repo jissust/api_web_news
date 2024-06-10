@@ -1,7 +1,8 @@
 'use strict'
 
-var validator = require('validator');
-
+const validator = require('validator');
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 var User = require('../models/user');
 
 var controller = {
@@ -23,8 +24,42 @@ var controller = {
             });
         });
     },
+    login: async(req, res) => {
+        const user = await User.findOne({ email: req.body.email});
+        
+        if(!user){
+            return res.status(200).send({
+                status: 'error',
+                message: 'error email/password'
+            });
+        }
+
+        const eq = bcrypt.compareSync(req.body.password, user.password);
+
+        if(!eq){
+            return res.status(200).send({
+                status: 'error',
+                message: 'error email/password'
+            });
+        }
+
+        try {
+            const token = controller.createToken(user);
+            return res.status(200).send({
+                status: 'success',
+                token: token  
+            })
+        } catch (error) {
+
+            return res.status(500).send({
+                status: 'error',
+                message: 'Error al crear token de acceso'  
+            })
+        }
+    },
     save: async(req, res) => {
         var params = req.body;
+
         try{
             var validate_name = !validator.isEmpty(params.name);
             var validate_surname = !validator.isEmpty(params.surname);
@@ -48,7 +83,7 @@ var controller = {
             user.name = params.name;
             user.surname = params.surname;
             user.email = params.email;
-            user.password = params.password;
+            user.password = bcrypt.hashSync(params.password, 12);
             user.url_image_profile = params.url_image_profile;
 
             try{
@@ -158,6 +193,13 @@ var controller = {
                 error
             });
         })
+    },
+    createToken: (user) => {
+        const payload = {
+            user_id: user._id,
+            user_email: user.email
+        }
+        return jwt.sign(payload, 'user')
     }
 };
 
